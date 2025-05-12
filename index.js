@@ -9,10 +9,13 @@ const canvas = document.createElement("canvas");
 canvas.id = "myCanvas";
 canvas.width = 1400;
 canvas.height = 900;
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", {
+  willReadFrequently: true
+});
+const blockSize = 20;
 ctx.textBaseline = "middle";
 ctx.textAlign = "center";
-ctx.font = "30px 'Press Start 2P'";
+ctx.font = `${blockSize + 10}px 'Press Start 2P'`;
 ctx.fillStyle = `hsl(${130}, 100%, 50%)`;
 
 document.body.appendChild(canvas);
@@ -22,10 +25,11 @@ const random = (i = 1, a) => {
   return Math.random() * (a - i) + i;
 };
 
+const pad = (num, c = 2) => num.toString().padStart(c, '0');
+
 const positions = [];
 const coords = [];
 const targetDate = new Date("2025-07-12T16:30:00");
-const blockSize = 20;
 const stp = 8 * blockSize;
 const topY = 140;
 const bottomY = 460;
@@ -265,7 +269,6 @@ function doCRT() {
 }
 
 function countdown(dt) {
-  const pad = (num) => num.toString().padStart(2, '0');
 
   if ((timer += dt) >= 1) {
     const now = new Date();
@@ -296,6 +299,8 @@ function countdown(dt) {
   ctx.fillText("HOURS", (canvas.width >> 1) - 358, 690);
   ctx.fillText("MINUTES", (canvas.width >> 1) + 2, 690);
   ctx.fillText("SECONDS", (canvas.width >> 1) + 362, 690);
+
+  ctx.fillText(`${pad(~~(timer*1000), 3)}`, canvas.width >> 1, canvas.height - 50)
 
   doCRT();
 }
